@@ -1,34 +1,17 @@
 # CCurl
 
-A Swift wrapper around [libcurl][1] that works with Linux
+A Swift wrapper around [libcurl][1] that works with Linux.
+Because `curl_easy_setopt` is a variadic function and so is not imported by Swift,
+additional wrapper functions are provided to get around the problem, such as:
+
+* `curl_easy_setopt_string`
+* `curl_easy_setopt_bool`
 
 ## Dependencies
 
 For Linux you need:
 
 `sudo apt-get install libcurl4-openssl-dev`
-
-
-# Build the library
-
-At the moment, you need to build the static library yourself as `curl_easy_setopt`
-is a variadic function and so is not imported by Swift.
-
-The sotscurl.a static library provides these additional functions to get around
-this problem:
-
-* `curl_easy_setopt_string`
-* `curl_easy_setopt_bool`
-
-
-Build it like this:
-
-```
-make
-sudo make install
-```
-
-
 
 ## Usage
 
@@ -37,33 +20,28 @@ This component is set up to be used with the [Swift Package Manager][2].
 Add this line to your `dependencies` section:
 
 ```swift
-.Package(url: "https://github.com/SwiftOnTheServer/CCurl.git", majorVersion: 1)
+.package(url: "https://github.com/in2core/CCurl.git", .branch("master"))
 ```
 
-If you do not have a `Package.swift`, then this will work:
-
-```swift
-import PackageDescription
-
-let package = Package(
-    dependencies: [
-        .Package(url: "https://github.com/SwiftOnTheServer/CCurl.git", majorVersion: 1)
-    ]
-)
-```
-
-
-## Example application
+## Example Application
 
 In a new directory, create `Package.swift`:
 
-
 ```swift
+// swift-tools-version:4.0
+
 import PackageDescription
 
 let package = Package(
+    name: "CCurlTest",
+    products: [
+        .executable(name: "CCurlTest", targets: ["CCurlTest"])
+    ],
     dependencies: [
-        .Package(url: "https://github.com/SwiftOnTheServer/CCurl.git", versions: Version(0,0,1)..<Version(2,0,0))
+        .package(url: "https://github.com/in2core/CCurl.git", .branch("master"))
+    ],
+    targets: [
+        .target(name: "CCurlTest", dependencies: ["CCurl"], path: ".")
     ]
 )
 ```
@@ -79,16 +57,15 @@ curl_easy_setopt_string(handle, CURLOPT_URL, "http://www.example.com")
 curl_easy_setopt_bool(handle, CURLOPT_VERBOSE, true)
 
 let ret = curl_easy_perform(handle)
-let error = curl_easy_strerror(ret)
-
-print("error = \(error)")
+if let error = curl_easy_strerror(ret) {
+    print("error = \(error)")
+}
 print("ret = \(ret)")
 ```
 
 Build the app: `swift build`
 
-Run the app: `.build/debug/app`
-
+Run the app: `.build/debug/CCurlTest`
 
 [1]: http://curl.haxx.se/libcurl/
 [2]: https://swift.org/package-manager/

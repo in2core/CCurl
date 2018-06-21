@@ -20,8 +20,7 @@ static CURLcode curl_easy_setopt_func(CURL *handle, CURLoption option, curl_func
     return curl_easy_setopt(handle, option, param);
 }
 
-static CURLcode curl_easy_setopt_pointer(CURL *handle, CURLoption option, void* param)
-{
+static CURLcode curl_easy_setopt_pointer(CURL *handle, CURLoption option, void *param) {
     return curl_easy_setopt(handle, option, param);
 }
 

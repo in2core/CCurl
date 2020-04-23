@@ -8,14 +8,5 @@ let package = Package(
     providers: [
         .brew(["curl"]),
         .apt(["libcurl4-openssl-dev"]),
-    ],
-    products: [
-        .library(
-            name: "CCurl",
-            targets: ["CCurl"]
-        )
-    ],
-    targets: [
-        .target(name: "CCurl")
     ]
 )
